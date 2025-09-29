@@ -20,7 +20,6 @@ from nltk.stem import WordNetLemmatizer
 
 # Download NLTK data (Needed for tokenization/NLP)
 try:
-    # Render's environment will handle this during the build process
     nltk.download('punkt', quiet=True)
     nltk.download('stopwords', quiet=True)
     nltk.download('wordnet', quiet=True)
@@ -222,17 +221,104 @@ def index():
 <head>
     <title>ResQRelief - Disaster Management System</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 40px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; min-height: 100vh; }
-        .container { max-width: 800px; margin: 0 auto; text-align: center; }
-        .card { background: rgba(255,255,255,0.1); padding: 30px; margin: 20px 0; border-radius: 10px; backdrop-filter: blur(10px); }
-        .btn { background: #e74c3c; color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; margin: 10px; display: inline-block; transition: all 0.3s; }
-        .btn:hover { background: #c0392b; transform: translateY(-2px); }
-        h1 { font-size: 3em; margin-bottom: 20px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
-        .feature { display: inline-block; margin: 20px; }
+        /* BASE THEME - DARK MODE */
+        :root {
+            --bg-start: #0f2027; /* Dark Teal Start */
+            --bg-end: #203a43;   /* Dark Blue End */
+            --text-color: white;
+            --card-bg: rgba(255,255,255,0.1);
+            --btn-bg: #1abc9c; /* Bright Teal Button */
+            --btn-hover-bg: #16a085;
+            --shadow-color: rgba(0,0,0,0.4);
+            --toggle-text: yellow;
+        }
+        
+        /* LIGHT MODE OVERRIDES */
+        body.light-theme {
+            --bg-start: #e0f2f1; /* Light mint/teal */
+            --bg-end: #b2dfdb;   /* Slightly darker mint */
+            --text-color: #333;
+            --card-bg: rgba(0,0,0,0.05);
+            --btn-bg: #3498db; /* Blue button */
+            --btn-hover-bg: #2980b9;
+            --shadow-color: rgba(0,0,0,0.1);
+            --toggle-text: #333;
+        }
+
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 40px; 
+            background: linear-gradient(135deg, var(--bg-start) 0%, var(--bg-end) 100%); 
+            color: var(--text-color); 
+            min-height: 100vh;
+            transition: background 0.5s, color 0.5s;
+        }
+        .container { 
+            max-width: 800px; 
+            margin: 0 auto; 
+            text-align: center; 
+            position: relative; /* For toggle button */
+        }
+        .card { 
+            background: var(--card-bg); 
+            padding: 30px; 
+            margin: 20px 0; 
+            border-radius: 10px; 
+            backdrop-filter: blur(5px); 
+            box-shadow: 0 4px 15px var(--shadow-color);
+            transition: background 0.5s, box-shadow 0.5s;
+        }
+        .btn { 
+            background: var(--btn-bg); 
+            color: white; 
+            padding: 15px 30px; 
+            text-decoration: none; 
+            border-radius: 5px; 
+            margin: 10px; 
+            display: inline-block; 
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+        .btn:hover { 
+            background: var(--btn-hover-bg); 
+            transform: translateY(-2px); 
+        }
+        h1 { 
+            font-size: 3em; 
+            margin-bottom: 20px; 
+            text-shadow: 2px 2px 4px var(--shadow-color); 
+        }
+        .feature { 
+            display: inline-block; 
+            margin: 20px; 
+        }
+        .theme-toggle-container {
+            position: absolute;
+            top: 0;
+            right: 0;
+        }
+        .theme-toggle-btn {
+            background: none;
+            color: var(--toggle-text);
+            border: 2px solid var(--toggle-text);
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s;
+        }
+        .theme-toggle-btn:hover {
+            background: var(--toggle-text);
+            color: var(--bg-start);
+        }
     </style>
 </head>
-<body>
+<body class="dark-theme">
     <div class="container">
+        <div class="theme-toggle-container">
+            <button id="theme-toggle" class="theme-toggle-btn">☀️ Light Mode</button>
+        </div>
         <h1>🛡️ ResQRelief</h1>
         <p style="font-size: 1.2em;">Integrated Disaster Impact Prediction and Response Management System</p>
 
@@ -258,6 +344,32 @@ def index():
             </div>
         </div>
     </div>
+    <script>
+        const body = document.body;
+        const toggleBtn = document.getElementById('theme-toggle');
+        const currentTheme = localStorage.getItem('theme') || 'dark-theme';
+
+        body.className = currentTheme;
+        if (currentTheme === 'light-theme') {
+            toggleBtn.textContent = '🌙 Dark Mode';
+        } else {
+            toggleBtn.textContent = '☀️ Light Mode';
+        }
+
+        toggleBtn.addEventListener('click', () => {
+            if (body.classList.contains('dark-theme')) {
+                body.classList.remove('dark-theme');
+                body.classList.add('light-theme');
+                toggleBtn.textContent = '🌙 Dark Mode';
+                localStorage.setItem('theme', 'light-theme');
+            } else {
+                body.classList.remove('light-theme');
+                body.classList.add('dark-theme');
+                toggleBtn.textContent = '☀️ Light Mode';
+                localStorage.setItem('theme', 'dark-theme');
+            }
+        });
+    </script>
 </body>
 </html>"""
     return html_content
@@ -269,17 +381,82 @@ def flood_prediction():
 <head>
     <title>Flood Risk Prediction</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; background: #f4f4f4; }
-        .container { max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        /* Copy the full style block from the index route here */
+        :root {
+            --bg-start: #0f2027;
+            --bg-end: #203a43;
+            --text-color: #333;
+            --container-bg: white;
+            --btn-bg: #3498db;
+            --btn-hover-bg: #2980b9;
+            --result-bg: #ecf0f1;
+            --link-color: #3498db;
+        }
+        
+        body.dark-theme {
+            --text-color: #f0f0f0;
+            --container-bg: #2c3e50;
+            --btn-bg: #1abc9c;
+            --btn-hover-bg: #16a085;
+            --result-bg: #34495e;
+            --link-color: #1abc9c;
+        }
+
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 20px; 
+            background-color: var(--bg-start);
+            color: var(--text-color);
+            transition: background-color 0.5s, color 0.5s;
+        }
+        .container { 
+            max-width: 600px; 
+            margin: 0 auto; 
+            background: var(--container-bg); 
+            padding: 30px; 
+            border-radius: 10px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: background 0.5s;
+        }
         .form-group { margin: 15px 0; }
-        label { display: block; margin-bottom: 5px; font-weight: bold; color: #333; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; color: var(--text-color); }
         input[type="range"] { width: 100%; }
         .range-value { float: right; font-weight: bold; color: #e74c3c; }
-        .btn { background: #3498db; color: white; padding: 15px 30px; border: none; border-radius: 5px; cursor: pointer; width: 100%; font-size: 16px; transition: all 0.3s; }
-        .btn:hover { background: #2980b9; transform: translateY(-1px); }
-        .result { margin-top: 20px; padding: 20px; background: #ecf0f1; border-radius: 5px; display: none; }
+        .btn { 
+            background: var(--btn-bg); 
+            color: white; 
+            padding: 15px 30px; 
+            border: none; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            width: 100%; 
+            font-size: 16px; 
+            transition: all 0.3s; 
+        }
+        .btn:hover { 
+            background: var(--btn-hover-bg); 
+            transform: translateY(-1px); 
+        }
+        .result { 
+            margin-top: 20px; 
+            padding: 20px; 
+            background: var(--result-bg); 
+            border-radius: 5px; 
+            display: none;
+            color: var(--text-color);
+        }
         .risk-low { color: #27ae60; } .risk-medium { color: #f39c12; } .risk-high { color: #e74c3c; } .risk-very-high { color: #8e44ad; font-weight: bold; }
+        a { color: var(--link-color); text-decoration: none; transition: color 0.5s;}
     </style>
+    <script>
+        // Function to set theme from local storage
+        function applyTheme() {
+            const currentTheme = localStorage.getItem('theme') || 'dark-theme';
+            document.body.className = currentTheme;
+        }
+        // Apply theme on page load
+        document.addEventListener('DOMContentLoaded', applyTheme);
+    </script>
 </head>
 <body>
     <div class="container">
@@ -322,7 +499,7 @@ def flood_prediction():
         </div>
 
         <div style="text-align: center; margin-top: 20px;">
-            <a href="/" style="color: #3498db; text-decoration: none;">← Back to Dashboard</a>
+            <a href="/">← Back to Dashboard</a>
         </div>
     </div>
 
@@ -385,17 +562,123 @@ def message_classification():
 <head>
     <title>Message Classification</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; background: #f4f4f4; }
-        .container { max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        textarea { width: 100%; height: 120px; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 16px; resize: vertical; }
-        .btn { background: #27ae60; color: white; padding: 15px 30px; border: none; border-radius: 5px; cursor: pointer; width: 100%; font-size: 16px; margin-top: 15px; transition: all 0.3s; }
-        .btn:hover { background: #229954; transform: translateY(-1px); }
-        .result { margin-top: 20px; padding: 20px; background: #ecf0f1; border-radius: 5px; display: none; }
-        .category { background: #3498db; color: white; padding: 5px 10px; margin: 5px; border-radius: 15px; display: inline-block; font-size: 14px; }
-        .examples { margin-top: 20px; padding: 15px; background: #fff3cd; border-radius: 5px; border-left: 4px solid #ffc107; }
-        .example { cursor: pointer; padding: 8px; margin: 5px 0; border-radius: 3px; background: #f8f9fa; border: 1px solid #dee2e6; transition: all 0.3s; }
-        .example:hover { background: #e9ecef; transform: translateX(5px); }
+        /* Copy the full style block from the index route here */
+        :root {
+            --bg-start: #0f2027;
+            --bg-end: #203a43;
+            --text-color: #333;
+            --container-bg: white;
+            --btn-bg: #27ae60;
+            --btn-hover-bg: #229954;
+            --result-bg: #ecf0f1;
+            --link-color: #27ae60;
+            --category-bg: #3498db;
+        }
+        
+        body.dark-theme {
+            --text-color: #f0f0f0;
+            --container-bg: #2c3e50;
+            --btn-bg: #1abc9c;
+            --btn-hover-bg: #16a085;
+            --result-bg: #34495e;
+            --link-color: #1abc9c;
+            --category-bg: #3498db;
+        }
+
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 20px; 
+            background-color: var(--bg-start);
+            color: var(--text-color);
+            transition: background-color 0.5s, color 0.5s;
+        }
+        .container { 
+            max-width: 600px; 
+            margin: 0 auto; 
+            background: var(--container-bg); 
+            padding: 30px; 
+            border-radius: 10px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: background 0.5s;
+        }
+        textarea { 
+            width: 100%; 
+            height: 120px; 
+            padding: 10px; 
+            border: 1px solid #ddd; 
+            border-radius: 5px; 
+            font-size: 16px; 
+            resize: vertical;
+            background: var(--container-bg);
+            color: var(--text-color);
+            transition: background 0.5s, color 0.5s;
+        }
+        .btn { 
+            background: var(--btn-bg); 
+            color: white; 
+            padding: 15px 30px; 
+            border: none; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            width: 100%; 
+            font-size: 16px; 
+            margin-top: 15px; 
+            transition: all 0.3s;
+        }
+        .btn:hover { 
+            background: var(--btn-hover-bg); 
+            transform: translateY(-1px); 
+        }
+        .result { 
+            margin-top: 20px; 
+            padding: 20px; 
+            background: var(--result-bg); 
+            border-radius: 5px; 
+            display: none;
+            color: var(--text-color);
+        }
+        .category { 
+            background: var(--category-bg); 
+            color: white; 
+            padding: 5px 10px; 
+            margin: 5px; 
+            border-radius: 15px; 
+            display: inline-block; 
+            font-size: 14px; 
+        }
+        .examples { 
+            margin-top: 20px; 
+            padding: 15px; 
+            background: var(--result-bg); /* Use result bg for consistent theme */
+            border-radius: 5px; 
+            border-left: 4px solid var(--link-color); 
+            transition: background 0.5s;
+        }
+        .example { 
+            cursor: pointer; 
+            padding: 8px; 
+            margin: 5px 0; 
+            border-radius: 3px; 
+            background: var(--container-bg); /* Use container bg for cleaner contrast */
+            border: 1px solid #ddd; 
+            transition: all 0.3s;
+            color: var(--text-color);
+        }
+        .example:hover { 
+            background: #e9ecef; 
+            transform: translateX(5px); 
+        }
+        a { color: var(--link-color); text-decoration: none; transition: color 0.5s;}
     </style>
+    <script>
+        // Function to set theme from local storage
+        function applyTheme() {
+            const currentTheme = localStorage.getItem('theme') || 'dark-theme';
+            document.body.className = currentTheme;
+        }
+        // Apply theme on page load
+        document.addEventListener('DOMContentLoaded', applyTheme);
+    </script>
 </head>
 <body>
     <div class="container">
@@ -424,7 +707,7 @@ def message_classification():
         </div>
 
         <div style="text-align: center; margin-top: 20px;">
-            <a href="/" style="color: #27ae60; text-decoration: none;">← Back to Dashboard</a>
+            <a href="/">← Back to Dashboard</a>
         </div>
     </div>
 
