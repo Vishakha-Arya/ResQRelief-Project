@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 ResQRelief: Disaster Management System 
-(FINAL DEPLOYMENT VERSION)
+(FINAL DEPLOYMENT VERSION with UI Enhancements)
 """
 
 import pandas as pd
@@ -232,6 +232,7 @@ def index():
             --btn-hover-bg: #16a085;
             --shadow-color: rgba(0,0,0,0.4);
             --toggle-text: yellow;
+            --header-bg: #0f2027; /* Dark Header BG */
         }
         
         /* LIGHT MODE OVERRIDES */
@@ -244,21 +245,42 @@ def index():
             --btn-hover-bg: #2980b9;
             --shadow-color: rgba(0,0,0,0.1);
             --toggle-text: #333;
+            --header-bg: #b2dfdb; /* Light Header BG */
         }
 
         body { 
             font-family: Arial, sans-serif; 
-            margin: 40px; 
+            margin: 0; /* Removed fixed margin */
+            padding-top: 80px; /* Space for fixed header */
             background: linear-gradient(135deg, var(--bg-start) 0%, var(--bg-end) 100%); 
             color: var(--text-color); 
             min-height: 100vh;
             transition: background 0.5s, color 0.5s;
         }
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: var(--header-bg);
+            color: var(--text-color);
+            padding: 15px 40px;
+            box-shadow: 0 2px 10px var(--shadow-color);
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 1.5em;
+            text-shadow: none;
+        }
         .container { 
             max-width: 800px; 
-            margin: 0 auto; 
+            margin: 20px auto; /* Added margin for content */
             text-align: center; 
-            position: relative; /* For toggle button */
+            padding: 0 20px;
         }
         .card { 
             background: var(--card-bg); 
@@ -294,35 +316,56 @@ def index():
             display: inline-block; 
             margin: 20px; 
         }
-        .theme-toggle-container {
-            position: absolute;
-            top: 0;
-            right: 0;
-        }
         .theme-toggle-btn {
-            background: none;
-            color: var(--toggle-text);
-            border: 2px solid var(--toggle-text);
+            background: var(--btn-bg);
+            color: white;
+            border: none;
             padding: 8px 15px;
             border-radius: 5px;
             cursor: pointer;
-            font-size: 1em;
+            font-size: 0.9em;
             transition: all 0.3s;
         }
         .theme-toggle-btn:hover {
-            background: var(--toggle-text);
-            color: var(--bg-start);
+            background: var(--btn-hover-bg);
+        }
+        .intro-section {
+            text-align: left;
+            margin-bottom: 40px;
+            padding: 20px;
+            border-bottom: 1px solid var(--card-bg);
+        }
+        .intro-section h2 {
+            font-size: 2em;
+            color: var(--btn-bg);
+        }
+        .footer {
+            text-align: center;
+            padding: 15px 0;
+            margin-top: 50px;
+            border-top: 1px solid var(--card-bg);
+            color: rgba(var(--text-color), 0.7);
         }
     </style>
 </head>
 <body class="dark-theme">
-    <div class="container">
-        <div class="theme-toggle-container">
-            <button id="theme-toggle" class="theme-toggle-btn">☀️ Light Mode</button>
-        </div>
-        <h1>🛡️ ResQRelief</h1>
-        <p style="font-size: 1.2em;">Integrated Disaster Impact Prediction and Response Management System</p>
+    <div class="header">
+        <h1>ResQRelief</h1>
+        <button id="theme-toggle" class="theme-toggle-btn">☀️ Light Mode</button>
+    </div>
 
+    <div class="container">
+        <div class="intro-section">
+            <h2>Harnessing Data for Disaster Resilience</h2>
+            <p style="font-size: 1.1em;">
+                **ResQRelief** is an integrated MVP designed to transform raw environmental data and crisis messages into actionable intelligence. Our system uses advanced Machine Learning models to predict flood vulnerability and automatically prioritize emergency response efforts.
+            </p>
+            <ul style="list-style-type: none; padding: 0; margin-top: 20px;">
+                <li>🚀 **Goal:** Provide rapid, data-driven insights to save time and resources during critical disaster phases.</li>
+                <li>🧠 **Core:** Two distinct ML models running entirely on the server backend (Flask).</li>
+            </ul>
+        </div>
+        
         <div class="card">
             <h2>🌊 Flood Risk Prediction</h2>
             <p>Analyze environmental factors and predict flood probability using machine learning</p>
@@ -335,11 +378,17 @@ def index():
             <a href="/message-classification" class="btn">Classify Messages</a>
         </div>
     </div>
+    
+    <div class="footer">
+        &copy; 2025 ResQRelief Project | Developed by Vishakha Arya
+    </div>
+
     <script>
         const body = document.body;
         const toggleBtn = document.getElementById('theme-toggle');
         const currentTheme = localStorage.getItem('theme') || 'dark-theme';
 
+        // Apply saved theme on initial load
         body.className = currentTheme;
         if (currentTheme === 'light-theme') {
             toggleBtn.textContent = '🌙 Dark Mode';
@@ -347,6 +396,7 @@ def index():
             toggleBtn.textContent = '☀️ Light Mode';
         }
 
+        // Theme Toggle Logic
         toggleBtn.addEventListener('click', () => {
             if (body.classList.contains('dark-theme')) {
                 body.classList.remove('dark-theme');
@@ -360,6 +410,11 @@ def index():
                 localStorage.setItem('theme', 'dark-theme');
             }
         });
+        
+        // Ensure theme is applied to other routes on load (as they don't have the toggle logic)
+        document.addEventListener('DOMContentLoaded', () => {
+            document.body.className = localStorage.getItem('theme') || 'dark-theme';
+        });
     </script>
 </body>
 </html>"""
@@ -372,7 +427,7 @@ def flood_prediction():
 <head>
     <title>Flood Risk Prediction</title>
     <style>
-        /* Copy the full style block from the index route here */
+        /* Shared Styles: Must include all variables for theme */
         :root {
             --bg-start: #0f2027;
             --bg-end: #203a43;
@@ -382,6 +437,7 @@ def flood_prediction():
             --btn-hover-bg: #2980b9;
             --result-bg: #ecf0f1;
             --link-color: #3498db;
+            --header-bg: #b2dfdb;
         }
         
         body.dark-theme {
@@ -391,18 +447,39 @@ def flood_prediction():
             --btn-hover-bg: #16a085;
             --result-bg: #34495e;
             --link-color: #1abc9c;
+            --header-bg: #0f2027;
         }
 
         body { 
             font-family: Arial, sans-serif; 
-            margin: 20px; 
-            background-color: var(--bg-start);
+            margin: 0;
+            padding-top: 80px; /* Space for fixed header */
+            background: linear-gradient(135deg, var(--bg-start) 0%, var(--bg-end) 100%); 
             color: var(--text-color);
-            transition: background-color 0.5s, color 0.5s;
+            min-height: 100vh;
+            transition: background 0.5s, color 0.5s;
+        }
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: var(--header-bg);
+            color: var(--text-color);
+            padding: 15px 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.4);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 1.5em;
+            text-shadow: none;
         }
         .container { 
             max-width: 600px; 
-            margin: 0 auto; 
+            margin: 20px auto; 
             background: var(--container-bg); 
             padding: 30px; 
             border-radius: 10px; 
@@ -438,6 +515,13 @@ def flood_prediction():
         }
         .risk-low { color: #27ae60; } .risk-medium { color: #f39c12; } .risk-high { color: #e74c3c; } .risk-very-high { color: #8e44ad; font-weight: bold; }
         a { color: var(--link-color); text-decoration: none; transition: color 0.5s;}
+        .footer {
+            text-align: center;
+            padding: 15px 0;
+            margin-top: 50px;
+            border-top: 1px solid var(--result-bg);
+            color: rgba(var(--text-color), 0.7);
+        }
     </style>
     <script>
         // Function to set theme from local storage
@@ -450,6 +534,10 @@ def flood_prediction():
     </script>
 </head>
 <body>
+    <div class="header">
+        <h1>🌊 Flood Risk Prediction</h1>
+    </div>
+
     <div class="container">
         <h1>🌊 Flood Risk Prediction</h1>
         <p>Adjust the environmental factors to predict flood risk probability</p>
@@ -492,6 +580,10 @@ def flood_prediction():
         <div style="text-align: center; margin-top: 20px;">
             <a href="/">← Back to Dashboard</a>
         </div>
+    </div>
+    
+    <div class="footer">
+        &copy; 2025 ResQRelief Project | Developed by Vishakha Arya
     </div>
 
     <script>
@@ -553,7 +645,7 @@ def message_classification():
 <head>
     <title>Message Classification</title>
     <style>
-        /* Copy the full style block from the index route here */
+        /* Shared Styles: Must include all variables for theme */
         :root {
             --bg-start: #0f2027;
             --bg-end: #203a43;
@@ -564,6 +656,7 @@ def message_classification():
             --result-bg: #ecf0f1;
             --link-color: #27ae60;
             --category-bg: #3498db;
+            --header-bg: #b2dfdb;
         }
         
         body.dark-theme {
@@ -574,18 +667,39 @@ def message_classification():
             --result-bg: #34495e;
             --link-color: #1abc9c;
             --category-bg: #3498db;
+            --header-bg: #0f2027;
         }
 
         body { 
             font-family: Arial, sans-serif; 
-            margin: 20px; 
-            background-color: var(--bg-start);
+            margin: 0; 
+            padding-top: 80px; /* Space for fixed header */
+            background: linear-gradient(135deg, var(--bg-start) 0%, var(--bg-end) 100%); 
             color: var(--text-color);
-            transition: background-color 0.5s, color 0.5s;
+            min-height: 100vh;
+            transition: background 0.5s, color 0.5s;
+        }
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: var(--header-bg);
+            color: var(--text-color);
+            padding: 15px 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.4);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 1.5em;
+            text-shadow: none;
         }
         .container { 
             max-width: 600px; 
-            margin: 0 auto; 
+            margin: 20px auto; 
             background: var(--container-bg); 
             padding: 30px; 
             border-radius: 10px; 
@@ -672,6 +786,10 @@ def message_classification():
     </script>
 </head>
 <body>
+    <div class="header">
+        <h1>💬 Message Classification</h1>
+    </div>
+
     <div class="container">
         <h1>💬 Disaster Message Classification</h1>
         <p>Enter an emergency message to automatically classify its type and priority level</p>
@@ -700,6 +818,10 @@ def message_classification():
         <div style="text-align: center; margin-top: 20px;">
             <a href="/">← Back to Dashboard</a>
         </div>
+    </div>
+    
+    <div class="footer">
+        &copy; 2025 ResQRelief Project | Developed by Vishakha Arya
     </div>
 
     <script>
