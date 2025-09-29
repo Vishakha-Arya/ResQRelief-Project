@@ -334,15 +334,15 @@ def index():
             <a href="/message-classification" class="btn">Classify Messages</a>
         </div>
 
-        <div class="card">
-            <h3>🔗 API Endpoints</h3>
-            <div class="feature">
-                <p><strong>POST /api/predict-flood</strong><br>Flood risk prediction API</p>
-            </div>
-            <div class="feature">
-                <p><strong>POST /api/classify-message</strong><br>Message classification API</p>
-            </div>
-        </div>
+        # <div class="card">
+        #     <h3>🔗 API Endpoints</h3>
+        #     <div class="feature">
+        #         <p><strong>POST /api/predict-flood</strong><br>Flood risk prediction API</p>
+        #     </div>
+        #     <div class="feature">
+        #         <p><strong>POST /api/classify-message</strong><br>Message classification API</p>
+        #     </div>
+        # </div>
     </div>
     <script>
         const body = document.body;
