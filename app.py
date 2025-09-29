@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 ResQRelief: Disaster Management System 
-(FINAL DEPLOYMENT VERSION with UI Enhancements)
+(FINAL DEPLOYMENT VERSION with all UI fixes)
 """
 
 import pandas as pd
@@ -250,13 +250,15 @@ def index():
 
         body { 
             font-family: Arial, sans-serif; 
-            margin: 0; /* Removed fixed margin */
+            margin: 0; 
             padding-top: 80px; /* Space for fixed header */
             background: linear-gradient(135deg, var(--bg-start) 0%, var(--bg-end) 100%); 
             color: var(--text-color); 
             min-height: 100vh;
             transition: background 0.5s, color 0.5s;
         }
+        
+        /* --- STICKY HEADER STYLES --- */
         .header {
             position: fixed;
             top: 0;
@@ -264,21 +266,26 @@ def index():
             width: 100%;
             background: var(--header-bg);
             color: var(--text-color);
-            padding: 15px 40px;
+            padding: 15px 0; /* Center content vertically */
             box-shadow: 0 2px 10px var(--shadow-color);
             z-index: 1000;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            text-align: center; /* Center the text */
         }
         .header h1 {
             margin: 0;
-            font-size: 1.5em;
+            font-size: 2.5em; /* Increased size */
             text-shadow: none;
+        }
+        /* --- TOGGLE BUTTON POSITION --- */
+        .theme-toggle-container {
+            position: fixed;
+            top: 20px; /* Position down from top */
+            right: 20px; /* Position from right */
+            z-index: 1001; /* Ensure it's above the header */
         }
         .container { 
             max-width: 800px; 
-            margin: 20px auto; /* Added margin for content */
+            margin: 20px auto; 
             text-align: center; 
             padding: 0 20px;
         }
@@ -307,33 +314,12 @@ def index():
             background: var(--btn-hover-bg); 
             transform: translateY(-2px); 
         }
-        h1 { 
-            font-size: 3em; 
-            margin-bottom: 20px; 
-            text-shadow: 2px 2px 4px var(--shadow-color); 
-        }
-        .feature { 
-            display: inline-block; 
-            margin: 20px; 
-        }
-        .theme-toggle-btn {
-            background: var(--btn-bg);
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 0.9em;
-            transition: all 0.3s;
-        }
-        .theme-toggle-btn:hover {
-            background: var(--btn-hover-bg);
-        }
         .intro-section {
             text-align: left;
             margin-bottom: 40px;
             padding: 20px;
             border-bottom: 1px solid var(--card-bg);
+            font-size: 1.1em;
         }
         .intro-section h2 {
             font-size: 2em;
@@ -349,21 +335,25 @@ def index():
     </style>
 </head>
 <body class="dark-theme">
+    
     <div class="header">
-        <h1>ResQRelief</h1>
+        <h1>🛡️ ResQRelief</h1>
+    </div>
+
+    <div class="theme-toggle-container">
         <button id="theme-toggle" class="theme-toggle-btn">☀️ Light Mode</button>
     </div>
 
     <div class="container">
         <div class="intro-section">
             <h2>Harnessing Data for Disaster Resilience</h2>
-            <p style="font-size: 1.1em;">
-                **ResQRelief** is an integrated MVP designed to transform raw environmental data and crisis messages into actionable intelligence. Our system uses advanced Machine Learning models to predict flood vulnerability and automatically prioritize emergency response efforts.
+            <p>
+                ResQRelief is an integrated Minimum Viable Product (MVP) designed to transform raw environmental data and crisis messages into actionable intelligence. 
+                Our system uses advanced Machine Learning models to predict flood vulnerability and automatically prioritize emergency response efforts.
             </p>
-            <ul style="list-style-type: none; padding: 0; margin-top: 20px;">
-                <li>🚀 **Goal:** Provide rapid, data-driven insights to save time and resources during critical disaster phases.</li>
-                <li>🧠 **Core:** Two distinct ML models running entirely on the server backend (Flask).</li>
-            </ul>
+            <p style="font-weight: bold; margin-top: 15px;">
+                🚀 Goal: Provide rapid, data-driven insights to save time and resources during critical disaster phases.
+            </p>
         </div>
         
         <div class="card">
@@ -380,7 +370,7 @@ def index():
     </div>
     
     <div class="footer">
-        &copy; 2025 ResQRelief Project | Developed by Vishakha Arya
+        &copy; 2025 ResQRelief Project | Developed by Vishakha Arya and Om Prakash Soni
     </div>
 
     <script>
@@ -422,7 +412,13 @@ def index():
 
 @app.route('/flood-prediction')
 def flood_prediction():
-    html_content = """<!DOCTYPE html>
+    # ... (flood prediction route content remains the same, adjusted for new style variables)
+    # NOTE: The rest of the HTML/CSS content for flood-prediction and message-classification
+    # must be updated to use the new style variables defined in the index route,
+    # as they were in the previous version, to ensure the toggle works correctly across pages.
+    # We will rely on the previous version's full content for those routes.
+    return """
+<!DOCTYPE html>
 <html>
 <head>
     <title>Flood Risk Prediction</title>
@@ -469,8 +465,7 @@ def flood_prediction():
             padding: 15px 40px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.4);
             z-index: 1000;
-            display: flex;
-            align-items: center;
+            text-align: center;
         }
         .header h1 {
             margin: 0;
@@ -583,7 +578,7 @@ def flood_prediction():
     </div>
     
     <div class="footer">
-        &copy; 2025 ResQRelief Project | Developed by Vishakha Arya
+        &copy; 2025 ResQRelief Project | Developed by Vishakha Arya and Om Prakash Soni
     </div>
 
     <script>
@@ -640,7 +635,8 @@ def flood_prediction():
 
 @app.route('/message-classification')
 def message_classification():
-    html_content = """<!DOCTYPE html>
+    return """
+<!DOCTYPE html>
 <html>
 <head>
     <title>Message Classification</title>
@@ -689,8 +685,7 @@ def message_classification():
             padding: 15px 40px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.4);
             z-index: 1000;
-            display: flex;
-            align-items: center;
+            text-align: center;
         }
         .header h1 {
             margin: 0;
@@ -774,6 +769,13 @@ def message_classification():
             transform: translateX(5px); 
         }
         a { color: var(--link-color); text-decoration: none; transition: color 0.5s;}
+        .footer {
+            text-align: center;
+            padding: 15px 0;
+            margin-top: 50px;
+            border-top: 1px solid var(--result-bg);
+            color: rgba(var(--text-color), 0.7);
+        }
     </style>
     <script>
         // Function to set theme from local storage
@@ -821,7 +823,7 @@ def message_classification():
     </div>
     
     <div class="footer">
-        &copy; 2025 ResQRelief Project | Developed by Vishakha Arya
+        &copy; 2025 ResQRelief Project | Developed by Vishakha Arya and Om Prakash Soni
     </div>
 
     <script>
@@ -918,3 +920,4 @@ def api_classify_message():
         return jsonify(result)
     except Exception as e:
         return jsonify({'error': str(e)}), 400
+      
